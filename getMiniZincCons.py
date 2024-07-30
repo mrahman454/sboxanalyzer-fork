@@ -46,3 +46,25 @@ def generateConsFromSbox(sb, ddt=1, starddt=1,detddt=1, lat=1, starlat=1,detlat=
         cpdetlin = sainv.generate_cp_constraints(detlin)
         print(cpdetlin)
 
+def getNXOR(n, mode=6):
+    truth_table=generate_truth_table(n)
+    from sboxanalyzer import SboxAnalyzer as sa
+    input_variables=["b"]
+    input_variables+=[f"a{i}" for i in range(n-2,-1,-1)]
+    cnf, milp = sa.encode_boolean_function(truth_table=truth_table, input_variables=input_variables, mode=mode)
+    print("Encoding")
+    print(getMiniZincMilpCons(milp))
+    print("\n\n\n")
+
+def generate_truth_table(n):
+    result = []
+    for i in range(2**n):
+        # Count the number of 1's in the binary representation of i
+        num_ones = bin(i).count('1')
+        # Determine if the count is even or odd
+        if num_ones % 2 == 0:
+            result.append(1)
+        else:
+            result.append(0)
+    return result
+
